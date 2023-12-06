@@ -4,19 +4,22 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 public class Main {
+
+    // Создаем объект Scanner для считывания ввода пользователя
     private static Scanner scan = new Scanner(System.in);
 
     public static void main(String[] args) {
 
+        // TreeMap для хранения контактов (ключ - имя, значение - номер)
         TreeMap<String, String> contact = new TreeMap<>();
 
         while (true) {
             System.out.println("Введите Номер или Имя.\n" +
-                            "LIST - посмотреть книгу.");
+                    "LIST - посмотреть книгу.");
             String input = scan.nextLine();
             if (!input.isEmpty())
+                // Обработка ввода пользователя и добавление контакта
                 contact.putAll(mainContact(input, contact));
             else {
                 System.out.println("Не может быть пустым.");
@@ -25,21 +28,28 @@ public class Main {
 
     }
 
+    // Метод для обработки ввода пользователя и добавления/вывода контактов
     static TreeMap<String, String> mainContact(String input, TreeMap<String, String> contact) {
-
+        // Если введено "LIST", выводим все контакты
         if (input.equals("LIST")) {
             printAllContact(contact);
-        } else if (input.matches("\\d+")) {
+        }
+        // Если введен номер телефона
+        else if (input.matches("\\d+")) {
             String number = getCorrectName(input);
 
+            // Проверка, есть ли такой номер в списке контактов
             if (!contact.containsValue(number)) {
                 contact.putAll(addContactNum(number, contact));
                 System.out.println("Контакт добавлен.");
             } else {
                 System.out.printf("%s: %s\n", getContactName(number, contact), number);
             }
-        } else {
+        }
+        // Если введено имя
+        else {
             String name = getName(input);
+            // Проверка, есть ли такое имя в списке контактов
             if (!contact.containsKey(name)) {
                 contact.putAll(addContactName(name, contact));
                 System.out.println("Контакт добавлен.");
@@ -50,18 +60,20 @@ public class Main {
         return contact;
     }
 
+    // Метод для получения корректного номера телефона от пользователя
     private static String getCorrectName(String str) {
         if (str.matches("\\d{10,16}")) {
             str = getNumber(str);
             return str;
         } else {
             System.out.println("Введенный номер не корректен\n" +
-                            "Номер телефона должен быть \n" +
-                            "от 10 до 16 чисел");
+                    "Номер телефона должен быть \n" +
+                    "от 10 до 16 чисел");
             return getCorrectName(scan.nextLine());
         }
     }
 
+    // Метод для извлечения имени из ввода пользователя
     private static String getName(String str) {
         Matcher match = Pattern.compile("[ a-zA-ZА-Яа-яёЁ]+").matcher(str);
 
@@ -69,6 +81,7 @@ public class Main {
         return match.group();
     }
 
+    // Метод для извлечения номера телефона из ввода пользователя
     private static String getNumber(String str) {
         Matcher match = Pattern.compile("[0-9]{10,16}").matcher(str);
 
@@ -76,6 +89,7 @@ public class Main {
         return match.group();
     }
 
+    // Метод для добавления контакта по номеру телефона
     private static TreeMap<String, String> addContactNum(String number, TreeMap<String, String> map) {
         System.out.println("Пожалуйста введите имя контакта.");
         String name = getName(scan.nextLine());
@@ -83,6 +97,7 @@ public class Main {
         return map;
     }
 
+    // Метод для добавления контакта по имени
     private static TreeMap<String, String> addContactName(String name, TreeMap<String, String> map) {
         System.out.println("Пожалуйста введите номер");
         String number = getCorrectName(scan.nextLine());
@@ -90,6 +105,7 @@ public class Main {
         return map;
     }
 
+    // Метод для получения имени контакта по номеру телефона
     private static String getContactName(String number, TreeMap<String, String> map) {
         String name = "";
         for (String elem : map.keySet()) {
@@ -100,6 +116,7 @@ public class Main {
         return name;
     }
 
+    // Метод для вывода списка всех контактов
     private static void printAllContact(TreeMap<String, String> map) {
 
         if (map.isEmpty()) {
